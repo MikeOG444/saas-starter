@@ -18,8 +18,6 @@ function ContactSection(props) {
     // Show pending indicator
     setPending(true);
 
-    console.log(data);
-
     contact
       .submit(data)
       .then(() => {
