@@ -153,7 +153,7 @@ function useAuthProvider() {
   useEffect(() => {
     // Get hash portion of URL if coming from Supabase OAuth or magic link flow.
     // Store on `window` so we can access in other functions after hash is removed.
-    window.lastHash = queryString.parse(window.location.hash);
+    window.lastHash = queryString.parse(window.location.hash || "");
 
     // If we have an `access_token` from OAuth or magic link flow avoid using
     // cached session so that user is `null` (loading state) until process completes.

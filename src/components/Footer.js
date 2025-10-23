@@ -8,7 +8,11 @@ import newsletter from "./../util/newsletter";
 
 function Footer(props) {
   const [subscribed, setSubscribed] = useState(false);
-  const { handleSubmit, register, errors } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = ({ email }) => {
     setSubscribed(true);
@@ -143,7 +147,7 @@ function Footer(props) {
                     placeholder="Email"
                     error={errors.email}
                     size="sm"
-                    inputRef={register({
+                    registration={register("email", {
                       required: "Please enter an email address",
                     })}
                   />

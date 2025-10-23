@@ -13,7 +13,11 @@ function EditItemModal(props) {
   const [pending, setPending] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
 
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   // This will fetch item if props.id is defined
   // Otherwise query does nothing and we assume
@@ -108,7 +112,7 @@ function EditItemModal(props) {
                     placeholder="Name"
                     defaultValue={itemData && itemData.name}
                     error={errors.name}
-                    inputRef={register({
+                    registration={register("name", {
                       required: "Please enter a name",
                     })}
                   />

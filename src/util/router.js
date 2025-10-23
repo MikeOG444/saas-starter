@@ -6,11 +6,14 @@
 
 import React, { useMemo, useEffect } from "react";
 import {
-  Router as RouterOriginal,
+  unstable_HistoryRouter as HistoryRouter,
+  Route,
+  Routes,
+  Link,
+  NavLink,
   useParams,
   useLocation,
-  useHistory,
-  useRouteMatch,
+  useNavigate,
 } from "react-router-dom";
 import queryString from "query-string";
 
@@ -23,10 +26,10 @@ export const history = createBrowserHistory();
 // Includes custom history object and component for auto-scrolling to top
 export function Router({ children }) {
   return (
-    <RouterOriginal history={history}>
+    <HistoryRouter history={history}>
       <ScrollToTop />
       {children}
-    </RouterOriginal>
+    </HistoryRouter>
   );
 }
 
@@ -37,30 +40,31 @@ export function Router({ children }) {
 export function useRouter() {
   const params = useParams();
   const location = useLocation();
-  const history = useHistory();
-  const match = useRouteMatch();
+  const navigate = useNavigate();
 
-  // Return our custom router object
-  // Memoize so that a new object is only returned if something changes
+  const query = useMemo(() => {
+    return {
+      ...queryString.parse(location.search || ""),
+      ...params,
+    };
+  }, [location.search, params]);
+
   return useMemo(() => {
+    const push = (to, options) => navigate(to, { ...(options || {}), replace: false });
+    const replace = (to, options) => navigate(to, { ...(options || {}), replace: true });
+
     return {
       params,
       location,
       history,
-      match,
-      // For convenience add push(), replace(), pathname at top level
-      push: history.push,
-      replace: history.replace,
+      match: undefined,
+      push,
+      replace,
+      navigate,
       pathname: location.pathname,
-      // Merge params and parsed query string into single "query" object
-      // so that they can be used interchangeably.
-      // Example: /:topic?sort=popular -> { topic: "react", sort: "popular" }
-      query: {
-        ...queryString.parse(location.search), // Convert string to object
-        ...params,
-      },
+      query,
     };
-  }, [params, match, location, history]);
+  }, [params, location, navigate, query]);
 }
 
 // Remove or customize if you need more advanced scroll behavior
@@ -73,13 +77,4 @@ function ScrollToTop() {
   return null;
 }
 
-export {
-  Route,
-  Switch,
-  Link,
-  NavLink,
-  useParams,
-  useLocation,
-  useHistory,
-  useRouteMatch,
-} from "react-router-dom";
+export { Route, Routes, Link, NavLink, useParams, useLocation, useNavigate };

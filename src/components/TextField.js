@@ -8,6 +8,7 @@ function TextField(props) {
     label,
     className,
     inputRef,
+    registration,
     ...inputProps
   } = props;
 
@@ -20,29 +21,40 @@ function TextField(props) {
     },
   };
 
+  const { ref: registrationRef, ...registrationProps } = registration || {};
+
+  const assignRef = (element) => {
+    if (registrationRef) {
+      registrationRef(element);
+    }
+
+    if (typeof inputRef === "function") {
+      inputRef(element);
+    } else if (inputRef && typeof inputRef === "object") {
+      inputRef.current = element;
+    }
+  };
+
+  const resolvedRef = registrationRef || inputRef ? assignRef : undefined;
+
+  const commonProps = {
+    className: `${classes.base} ${classes.size[size]}`,
+    ...inputProps,
+    ...registrationProps,
+  };
+
   return (
-    <div className={"w-full" + (className ? ` ${className}` : "")}>
+    <div className={"w-full" + (className ? ` ${className}` : "")}> 
       {label && (
         <label className="block mb-1 font-medium" htmlFor={props.id}>
           {label}
         </label>
       )}
 
-      {type === "textarea" && (
-        <textarea
-          className={`${classes.base} ${classes.size[size]}`}
-          ref={inputRef}
-          {...inputProps}
-        />
-      )}
+      {type === "textarea" && <textarea ref={resolvedRef} {...commonProps} />}
 
       {type !== "textarea" && (
-        <input
-          className={`${classes.base} ${classes.size[size]}`}
-          ref={inputRef}
-          type={type}
-          {...inputProps}
-        />
+        <input ref={resolvedRef} type={type} {...commonProps} />
       )}
 
       {error && (

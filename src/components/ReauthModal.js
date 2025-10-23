@@ -13,7 +13,11 @@ function ReauthModal(props) {
   const [pending, setPending] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
 
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (data) => {
     const { pass } = data;
@@ -97,7 +101,7 @@ function ReauthModal(props) {
                       name="pass"
                       placeholder="Password"
                       error={errors.pass}
-                      inputRef={register({
+                      registration={register("pass", {
                         required: "Please enter your password",
                       })}
                     />

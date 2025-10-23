@@ -2,7 +2,7 @@ import {
   useQuery,
   QueryClient,
   QueryClientProvider as QueryClientProviderBase,
-} from "react-query";
+} from "@tanstack/react-query";
 import supabase from "./supabase";
 
 // React Query client
@@ -13,21 +13,17 @@ const client = new QueryClient();
 // Fetch user data
 // Note: This is called automatically in `auth.js` and data is merged into `auth.user`
 export function useUser(uid) {
-  // Manage data fetching with React Query: https://react-query.tanstack.com/overview
-  return useQuery(
-    // Unique query key: https://react-query.tanstack.com/guides/query-keys
-    ["user", { uid }],
-    // Query function that fetches data
-    () =>
+  return useQuery({
+    queryKey: ["user", { uid }],
+    queryFn: () =>
       supabase
         .from("users")
         .select(`*, customers ( * )`)
         .eq("id", uid)
         .single()
         .then(handle),
-    // Only call query function if we have a `uid`
-    { enabled: !!uid }
-  );
+    enabled: !!uid,
+  });
 }
 
 // Fetch user data (non-hook)
@@ -49,7 +45,7 @@ export async function updateUser(uid, data) {
     .eq("id", uid)
     .then(handle);
   // Invalidate and refetch queries that could have old data
-  await client.invalidateQueries(["user", { uid }]);
+  await client.invalidateQueries({ queryKey: ["user", { uid }] });
   return response;
 }
 
@@ -58,33 +54,34 @@ export async function updateUser(uid, data) {
 
 // Fetch item data
 export function useItem(id) {
-  return useQuery(
-    ["item", { id }],
-    () => supabase.from("items").select().eq("id", id).single().then(handle),
-    { enabled: !!id }
-  );
+  return useQuery({
+    queryKey: ["item", { id }],
+    queryFn: () =>
+      supabase.from("items").select().eq("id", id).single().then(handle),
+    enabled: !!id,
+  });
 }
 
 // Fetch all items by owner
 export function useItemsByOwner(owner) {
-  return useQuery(
-    ["items", { owner }],
-    () =>
+  return useQuery({
+    queryKey: ["items", { owner }],
+    queryFn: () =>
       supabase
         .from("items")
         .select()
         .eq("owner", owner)
         .order("createdAt", { ascending: false })
         .then(handle),
-    { enabled: !!owner }
-  );
+    enabled: !!owner,
+  });
 }
 
 // Create a new item
 export async function createItem(data) {
   const response = await supabase.from("items").insert([data]).then(handle);
   // Invalidate and refetch queries that could have old data
-  await client.invalidateQueries(["items"]);
+  await client.invalidateQueries({ queryKey: ["items"] });
   return response;
 }
 
@@ -97,8 +94,8 @@ export async function updateItem(id, data) {
     .then(handle);
   // Invalidate and refetch queries that could have old data
   await Promise.all([
-    client.invalidateQueries(["item", { id }]),
-    client.invalidateQueries(["items"]),
+    client.invalidateQueries({ queryKey: ["item", { id }] }),
+    client.invalidateQueries({ queryKey: ["items"] }),
   ]);
   return response;
 }
@@ -112,8 +109,8 @@ export async function deleteItem(id) {
     .then(handle);
   // Invalidate and refetch queries that could have old data
   await Promise.all([
-    client.invalidateQueries(["item", { id }]),
-    client.invalidateQueries(["items"]),
+    client.invalidateQueries({ queryKey: ["item", { id }] }),
+    client.invalidateQueries({ queryKey: ["items"] }),
   ]);
   return response;
 }

@@ -10,7 +10,7 @@ import DashboardPage from "./dashboard";
 import AuthPage from "./auth";
 import SettingsPage from "./settings";
 import LegalPage from "./legal";
-import { Switch, Route, Router } from "./../util/router";
+import { Router, Routes, Route } from "./../util/router";
 import PurchasePage from "./purchase";
 import NotFoundPage from "./404";
 import Footer from "./../components/Footer";
@@ -25,42 +25,40 @@ function App(props) {
       <AuthProvider>
         <Chat />
         <Router>
-          <>
-            <Navbar bgColor="bg-white" />
+          <Navbar bgColor="bg-white" />
 
-            <Switch>
-              <Route exact path="/" component={IndexPage} />
+          <Routes>
+            <Route path="/" element={<IndexPage />} />
 
-              <Route exact path="/about" component={AboutPage} />
+            <Route path="/about" element={<AboutPage />} />
 
-              <Route exact path="/faq" component={FaqPage} />
+            <Route path="/faq" element={<FaqPage />} />
 
-              <Route exact path="/contact" component={ContactPage} />
+            <Route path="/contact" element={<ContactPage />} />
 
-              <Route exact path="/pricing" component={PricingPage} />
+            <Route path="/pricing" element={<PricingPage />} />
 
-              <Route exact path="/dashboard" component={DashboardPage} />
+            <Route path="/dashboard" element={<DashboardPage />} />
 
-              <Route exact path="/auth/:type" component={AuthPage} />
+            <Route path="/auth/:type" element={<AuthPage />} />
 
-              <Route exact path="/settings/:section" component={SettingsPage} />
+            <Route path="/settings/:section" element={<SettingsPage />} />
 
-              <Route exact path="/legal/:section" component={LegalPage} />
+            <Route path="/legal/:section" element={<LegalPage />} />
 
-              <Route exact path="/purchase/:plan" component={PurchasePage} />
+            <Route path="/purchase/:plan" element={<PurchasePage />} />
 
-              <Route component={NotFoundPage} />
-            </Switch>
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
 
-            <Footer
-              size="md"
-              bgColor="bg-white"
-              bgImage=""
-              bgImageOpacity={1}
-              textColor=""
-              sticky={true}
-            />
-          </>
+          <Footer
+            size="md"
+            bgColor="bg-white"
+            bgImage=""
+            bgImageOpacity={1}
+            textColor=""
+            sticky={true}
+          />
         </Router>
       </AuthProvider>
     </QueryClientProvider>
