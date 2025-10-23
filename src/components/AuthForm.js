@@ -9,7 +9,12 @@ function AuthForm(props) {
   const auth = useAuth();
 
   const [pending, setPending] = useState(false);
-  const { handleSubmit, register, errors, getValues } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    getValues,
+  } = useForm();
 
   const submitHandlersByType = {
     signin: ({ email, pass }) => {
@@ -74,7 +79,7 @@ function AuthForm(props) {
           name="email"
           placeholder="Email"
           error={errors.email}
-          inputRef={register({
+          registration={register("email", {
             required: "Please enter an email address",
           })}
         />
@@ -87,7 +92,7 @@ function AuthForm(props) {
           name="pass"
           placeholder="Password"
           error={errors.pass}
-          inputRef={register({
+          registration={register("pass", {
             required: "Please enter a password",
           })}
         />
@@ -100,14 +105,14 @@ function AuthForm(props) {
           name="confirmPass"
           placeholder="Confirm Password"
           error={errors.confirmPass}
-          inputRef={register({
+          registration={register("confirmPass", {
             required: "Please enter your password again",
             validate: (value) => {
-              if (value === getValues().pass) {
+              if (value === getValues("pass")) {
                 return true;
-              } else {
-                return "This doesn't match your password";
               }
+
+              return "This doesn't match your password";
             },
           })}
         />

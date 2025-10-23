@@ -8,7 +8,11 @@ import newsletter from "./../util/newsletter";
 
 function NewsletterSection(props) {
   const [subscribed, setSubscribed] = useState(false);
-  const { handleSubmit, register, errors } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = ({ email }) => {
     setSubscribed(true);
@@ -53,7 +57,7 @@ function NewsletterSection(props) {
                       name="email"
                       placeholder="Your email"
                       error={errors.email}
-                      inputRef={register({
+                      registration={register("email", {
                         required: "Please enter an email address",
                       })}
                     />

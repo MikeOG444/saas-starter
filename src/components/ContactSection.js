@@ -12,7 +12,12 @@ import contact from "./../util/contact";
 function ContactSection(props) {
   const [pending, setPending] = useState(false);
   const [formAlert, setFormAlert] = useState(null);
-  const { handleSubmit, register, errors, reset } = useForm();
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+    reset,
+  } = useForm();
 
   const onSubmit = (data) => {
     // Show pending indicator
@@ -77,7 +82,7 @@ function ContactSection(props) {
                     name="name"
                     placeholder=""
                     error={errors.name}
-                    inputRef={register()}
+                    registration={register("name")}
                   />
                 </div>
                 <div>
@@ -88,7 +93,7 @@ function ContactSection(props) {
                     name="email"
                     placeholder=""
                     error={errors.email}
-                    inputRef={register({
+                    registration={register("email", {
                       required: "Please enter an email address",
                     })}
                   />
@@ -103,7 +108,7 @@ function ContactSection(props) {
                   placeholder=""
                   error={errors.message}
                   rows={6}
-                  inputRef={register({
+                  registration={register("message", {
                     required: "Please enter a message",
                   })}
                 />

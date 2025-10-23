@@ -9,7 +9,11 @@ function SettingsGeneral(props) {
   const auth = useAuth();
   const [pending, setPending] = useState(false);
 
-  const { register, handleSubmit, errors } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   const onSubmit = (data) => {
     // Show pending indicator
@@ -55,7 +59,7 @@ function SettingsGeneral(props) {
         label="Name"
         defaultValue={auth.user.name}
         error={errors.name}
-        inputRef={register({
+        registration={register("name", {
           required: "Please enter your name",
         })}
       />
@@ -67,7 +71,7 @@ function SettingsGeneral(props) {
         label="Email"
         defaultValue={auth.user.email}
         error={errors.email}
-        inputRef={register({
+        registration={register("email", {
           required: "Please enter your email",
         })}
       />
